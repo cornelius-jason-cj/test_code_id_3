@@ -23,7 +23,7 @@ const loadUsers = createAsyncThunk(
 );
 
 const addUser = createAsyncThunk(
-  "users/loadUsers",
+  "users/addUser",
   async (user: any, { rejectWithValue }) => {
     try {
       const response = await axios.post("http://localhost:3010/users", user);
