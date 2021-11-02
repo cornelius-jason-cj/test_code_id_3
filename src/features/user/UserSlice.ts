@@ -14,7 +14,7 @@ const loadUsers = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get("http://localhost:3010/users");
-      console.log(response);
+      return response.data
     }
     catch(ex: any) {
       return rejectWithValue(ex.message);
@@ -26,8 +26,19 @@ const addUser = createAsyncThunk(
   "users/addUser",
   async (user: any, { rejectWithValue }) => {
     try {
-      const response = await axios.post("http://localhost:3010/users", user);
-      console.log(response);
+      await axios.post("http://localhost:3010/users", user);
+    }
+    catch(ex: any) {
+      return rejectWithValue(ex.message);
+    }
+  }
+);
+
+const deleteUser = createAsyncThunk(
+  "users/deleteUser",
+  async (id: number, { rejectWithValue }) => {
+    try {
+      await axios.delete(`http://localhost:3010/users/${id}`);
     }
     catch(ex: any) {
       return rejectWithValue(ex.message);
@@ -36,6 +47,10 @@ const addUser = createAsyncThunk(
 );
 
 const extraReducers = (builder: ActionReducerMapBuilder<UserState>) => {
+
+  builder.addCase(loadUsers.fulfilled, (state, action) => {
+    state.users = action.payload
+  })
 }
 
 const userSlice = createSlice({
@@ -45,6 +60,6 @@ const userSlice = createSlice({
   extraReducers
 });
 
-export const actions = { loadUsers, addUser, ...userSlice.actions };
+export const actions = { loadUsers, addUser, deleteUser, ...userSlice.actions };
 
 export default userSlice.reducer;
